@@ -2,4 +2,4 @@
 __pycache__/
 models/
 reports/
-*.dvc
+.dvc/cache/
