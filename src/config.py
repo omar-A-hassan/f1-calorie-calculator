@@ -7,9 +7,11 @@ DATA_PROCESSED: Path = PROJECT_ROOT / "data" / "processed"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
 REPORTS_DIR: Path = PROJECT_ROOT / "reports"
 
-# Ensure directories exist
-for _p in [DATA_PROCESSED, MODELS_DIR, REPORTS_DIR]:
-    _p.mkdir(parents=True, exist_ok=True)
+# Function to ensure directories exist (call when needed)
+def ensure_directories():
+    """Create necessary directories if they don't exist."""
+    for _p in [DATA_PROCESSED, MODELS_DIR, REPORTS_DIR]:
+        _p.mkdir(parents=True, exist_ok=True)
 
 # Core feature list (raw columns expected in CSV)
 RAW_NUM_FEATURES: List[str] = [

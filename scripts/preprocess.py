@@ -8,6 +8,9 @@ from src.preprocess import build_preprocessing_pipeline
 import src.config as cfg
 
 def run(stage: str) -> None:
+    # Ensure directories exist
+    cfg.ensure_directories()
+    
     csv_path = cfg.DATA_RAW / f"{stage}.csv"
     df = pd.read_csv(csv_path)
 

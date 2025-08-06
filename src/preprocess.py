@@ -101,6 +101,9 @@ def main() -> None:
                        help="Stage to process: train or test")
     args = parser.parse_args()
     
+    # Ensure directories exist
+    config.ensure_directories()
+    
     # Load data
     csv_path = config.DATA_RAW / f"{args.stage}.csv"
     df = pd.read_csv(csv_path)
