@@ -1,6 +1,11 @@
 .DS_Store
 __pycache__/
+
+# DVC managed outputs
 models/
 reports/
-data/processed/*.parquet
+data/processed/
+submission.csv
+
+# DVC internals
 .dvc/cache/

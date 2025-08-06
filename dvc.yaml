@@ -1,0 +1,64 @@
+stages:
+  preprocess_train:
+    cmd: python scripts/preprocess.py --stage train
+    deps:
+    - data/raw/train.csv
+    - scripts/preprocess.py
+    - src/preprocess.py
+    - src/config.py
+    outs:
+    - data/processed/train.parquet
+    - models/preproc.pkl
+    
+  preprocess_test:
+    cmd: python scripts/preprocess.py --stage test
+    deps:
+    - data/raw/test.csv
+    - models/preproc.pkl
+    - scripts/preprocess.py
+    - src/preprocess.py
+    outs:
+    - data/processed/test.parquet
+    
+  train_models:
+    cmd: python scripts/train.py --model all --trials 40
+    deps:
+    - data/processed/train.parquet
+    - data/raw/train.csv
+    - scripts/train.py
+    - src/train_models.py
+    - models/preproc.pkl
+    outs:
+    - models/lgb.pkl
+    - models/enet.pkl
+    - models/cat.pkl
+    - models/xgb.pkl
+    
+  stack_models:
+    cmd: python src/stacking.py
+    deps:
+    - data/processed/train.parquet
+    - data/raw/train.csv
+    - models/lgb.pkl
+    - models/enet.pkl
+    - models/cat.pkl
+    - models/xgb.pkl
+    - src/stacking.py
+    - src/config.py
+    outs:
+    - models/stacked.pkl
+    
+  make_submission:
+    cmd: python src/make_submission.py
+    deps:
+    - data/processed/test.parquet
+    - data/raw/sample_submission.csv
+    - models/stacked.pkl
+    - models/lgb.pkl
+    - models/enet.pkl
+    - models/cat.pkl
+    - models/xgb.pkl
+    - src/make_submission.py
+    - src/config.py
+    outs:
+    - submission.csv

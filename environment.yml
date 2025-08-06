@@ -13,7 +13,8 @@ dependencies:
   - shap>=0.44
   - ydata-profiling>=4.6
   - matplotlib>=3.9       
-  - jupyterlab            
+  - jupyterlab
+  - pyarrow           
   - pip
   - pip:
       - polars
