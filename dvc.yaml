@@ -21,7 +21,7 @@ stages:
     - data/processed/test.parquet
     
   train_models:
-    cmd: python scripts/train.py --model all --trials 40
+    cmd: python scripts/train.py --model all --trials 200
     deps:
     - data/processed/train.parquet
     - data/raw/train.csv

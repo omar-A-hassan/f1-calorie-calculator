@@ -25,12 +25,12 @@ def run(stage: str) -> None:
     out = cfg.DATA_PROCESSED / f"{stage}.parquet"
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     
-    # Get feature names with fallback
+    # Get feature names with fallback (updated for enhanced features)
     try:
         feature_names = pipe.get_feature_names_out()
     except:
         num_features = [f"num__{feat}" for feat in cfg.KEEP_FEATURES]
-        cat_features = [f"cat__{cfg.CAT_COL}_female", f"cat__{cfg.CAT_COL}_male"]
+        cat_features = [f"cat__{cfg.CAT_COL}_male"]  # Only one category since drop="first"
         feature_names = num_features + cat_features
     
     pd.DataFrame(X, columns=feature_names).to_parquet(out)

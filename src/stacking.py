@@ -17,14 +17,14 @@ try:
 except ImportError:
     import config
 
-BASE_MODELS = ["lgb", "cat", "xgb"]
+BASE_MODELS = ["lgb", "cat", "xgb", "enet"]
 PREPROC = joblib.load(config.MODELS_DIR / "preproc.pkl")
 try:
     FEATURE_NAMES = list(PREPROC.get_feature_names_out())
 except:
-    # Fallback if get_feature_names_out fails
+    # Fallback if get_feature_names_out fails (updated for enhanced features)
     num_features = [f"num__{feat}" for feat in config.KEEP_FEATURES]
-    cat_features = [f"cat__{config.CAT_COL}_female", f"cat__{config.CAT_COL}_male"]
+    cat_features = [f"cat__{config.CAT_COL}_male"]  # Only one category since drop="first"
     FEATURE_NAMES = num_features + cat_features
 
 

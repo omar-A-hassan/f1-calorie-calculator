@@ -52,6 +52,21 @@ jobs:
         dvc status
         dvc dag
         
+    - name: Commit submission
+      if: success()
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action Bot"
+        git add submission.csv
+        if git diff --staged --quiet; then
+          echo "No submission changes to commit"
+        else
+          git commit -m "Auto-submission: enhanced pipeline run ${{ github.run_number }} [skip ci]"
+          git push
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Commit DVC updates
       run: |
         git add *.dvc dvc.lock .gitignore || echo "No DVC files to add"

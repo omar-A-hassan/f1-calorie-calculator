@@ -1,0 +1,54 @@
+schema: '2.0'
+stages:
+  preprocess_train:
+    cmd: python scripts/preprocess.py --stage train
+    deps:
+    - path: data/raw/train.csv
+      hash: md5
+      md5: 970f84f7178e87d71712d049abcbcc35
+      size: 35463548
+    - path: scripts/preprocess.py
+      hash: md5
+      md5: d23cbb741c4fbb6a29376e6f31cb6506
+      size: 1443
+    - path: src/config.py
+      hash: md5
+      md5: d14270c52ea6327e3724ba576c4b36ef
+      size: 4230
+    - path: src/preprocess.py
+      hash: md5
+      md5: 6f27e63faf034c48a40cb8daa82c3570
+      size: 7187
+    outs:
+    - path: data/processed/train.parquet
+      hash: md5
+      md5: 2d71e37692b63e216164c89d1d7a174e
+      size: 18258963
+    - path: models/preproc.pkl
+      hash: md5
+      md5: b306af2a67d8a34e2d50b2532bcda508
+      size: 4361
+  preprocess_test:
+    cmd: python scripts/preprocess.py --stage test
+    deps:
+    - path: data/raw/test.csv
+      hash: md5
+      md5: e44258ef78fa9984cf0a63d1ab5a7fbf
+      size: 10524308
+    - path: models/preproc.pkl
+      hash: md5
+      md5: b306af2a67d8a34e2d50b2532bcda508
+      size: 4361
+    - path: scripts/preprocess.py
+      hash: md5
+      md5: d23cbb741c4fbb6a29376e6f31cb6506
+      size: 1443
+    - path: src/preprocess.py
+      hash: md5
+      md5: 6f27e63faf034c48a40cb8daa82c3570
+      size: 7187
+    outs:
+    - path: data/processed/test.parquet
+      hash: md5
+      md5: 52ff802619b5fa9149d11903bc05bee1
+      size: 6451352
