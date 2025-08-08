@@ -9,7 +9,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 import src.config as cfg
-AVAILABLE = ["lgb", "enet", "cat", "xgb"]
+AVAILABLE = ["lgb", "cat", "xgb"]
 
 def run(model: str, trials: int, folds: int, seed: int):
     cmd = [

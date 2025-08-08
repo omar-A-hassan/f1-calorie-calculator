@@ -30,7 +30,6 @@ stages:
     - models/preproc.pkl
     outs:
     - models/lgb.pkl
-    - models/enet.pkl
     - models/cat.pkl
     - models/xgb.pkl
     
@@ -40,7 +39,6 @@ stages:
     - data/processed/train.parquet
     - data/raw/train.csv
     - models/lgb.pkl
-    - models/enet.pkl
     - models/cat.pkl
     - models/xgb.pkl
     - src/stacking.py
@@ -55,7 +53,6 @@ stages:
     - data/raw/sample_submission.csv
     - models/stacked.pkl
     - models/lgb.pkl
-    - models/enet.pkl
     - models/cat.pkl
     - models/xgb.pkl
     - src/make_submission.py
