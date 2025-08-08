@@ -247,9 +247,8 @@ def train_meta() -> None:
     # Final results
     mean_rmse = np.mean(cv_scores)
     std_rmse = np.std(cv_scores)
-    print(f"[stacking] Enhanced meta-learner ({learner_type}) saved to {model_path}")
+    print(f"[stacking] meta-learner ({learner_type}) saved to {model_path}")
     print(f"[stacking] Final CV RMSE: {mean_rmse:.4f} ± {std_rmse:.4f}")
-    print(f"[stacking] Expected competition improvement: 0.1-0.2 RMSE reduction")
 
 
 if __name__ == "__main__":

@@ -57,11 +57,11 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action Bot"
-        git add submission.csv
+        git add -f submission.csv
         if git diff --staged --quiet; then
           echo "No submission changes to commit"
         else
-          git commit -m "Auto-submission: enhanced pipeline run ${{ github.run_number }} [skip ci]"
+          git commit -m "Auto-submission: pipeline run ${{ github.run_number }} [skip ci]"
           git push
         fi
       env:
