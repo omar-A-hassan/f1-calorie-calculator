@@ -46,27 +46,66 @@ def main() -> None:
         print("ERROR: No base models could be loaded")
         exit(1)
     
-    # Build meta-features DataFrame
+    # Build meta-features DataFrame with enhanced features
     meta_test = pd.DataFrame(meta_features)
-    print(f"Created meta-features DataFrame: {meta_test.shape}")
+    print(f"Created base meta-features DataFrame: {meta_test.shape}")
+    
+    # Create enhanced meta-features matching training process
+    def create_enhanced_meta_features_for_submission(base_preds):
+        """Create same meta-features used during training."""
+        import numpy as np
+        
+        meta_df = base_preds.copy()
+        
+        # Statistical meta-features
+        meta_df['pred_mean'] = base_preds.mean(axis=1)
+        meta_df['pred_std'] = base_preds.std(axis=1).fillna(0)
+        meta_df['pred_range'] = base_preds.max(axis=1) - base_preds.min(axis=1)
+        meta_df['pred_median'] = base_preds.median(axis=1)
+        
+        # Advanced meta-features
+        meta_df['pred_var'] = base_preds.var(axis=1).fillna(0)
+        meta_df['pred_skew'] = base_preds.skew(axis=1).fillna(0)
+        
+        # Validation to prevent pipeline failures
+        meta_df = meta_df.replace([np.inf, -np.inf], np.nan)
+        meta_df = meta_df.fillna(meta_df.mean())
+        
+        # Ensure no extreme values
+        for col in meta_df.columns:
+            if col.startswith('pred_'):
+                q99 = meta_df[col].quantile(0.99)
+                q01 = meta_df[col].quantile(0.01)
+                meta_df[col] = meta_df[col].clip(lower=q01, upper=q99)
+        
+        return meta_df
+    
+    # Create enhanced meta-features for submission
+    meta_test_enhanced = create_enhanced_meta_features_for_submission(meta_test)
+    print(f"Enhanced meta-features DataFrame: {meta_test_enhanced.shape}")
+    print(f"Enhanced features: {list(meta_test_enhanced.columns)}")
     
     try:
         # Load the stacked model
         stack_model = joblib.load(cfg.MODELS_DIR / "stacked.pkl")
-        print("✓ Loaded stacked model")
+        print("✓ Loaded enhanced stacked model")
         
         # Try to preserve column order from training
         if hasattr(stack_model, 'feature_names_in_'):
-            desired_order = [col for col in stack_model.feature_names_in_ if col in meta_test.columns]
+            desired_order = [col for col in stack_model.feature_names_in_ if col in meta_test_enhanced.columns]
             if desired_order:
-                meta_test = meta_test[desired_order]
-                print(f"  Using training column order: {desired_order}")
+                meta_test_final = meta_test_enhanced[desired_order]
+                print(f"  Using training column order: {len(desired_order)} features")
             else:
-                meta_test = meta_test.sort_index(axis=1)
-                print(f"  Using alphabetical order: {list(meta_test.columns)}")
+                # Fallback: try with base features only (for compatibility)
+                print("  No feature name match, trying base features only")
+                meta_test_final = meta_test.sort_index(axis=1)
         else:
-            meta_test = meta_test.sort_index(axis=1)
-            print(f"  Using alphabetical order: {list(meta_test.columns)}")
+            # Model doesn't have feature_names_in_, use enhanced features
+            meta_test_final = meta_test_enhanced.sort_index(axis=1)
+            print(f"  Using enhanced features: {list(meta_test_final.columns)}")
+        
+        meta_test = meta_test_final
             
     except FileNotFoundError:
         print("ERROR: Stacked model not found at models/stacked.pkl")

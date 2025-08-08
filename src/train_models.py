@@ -150,7 +150,7 @@ def run_optuna(X: pd.DataFrame, y: pd.Series, df_raw: pd.DataFrame,
     if model_name == "lgb":
         final_model = LGBMRegressor(**best_params, verbosity=-1)  # Add verbosity here too
     elif model_name == "enet":
-        final_model = ElasticNet(**best_params, max_iter=2000)  # Add max_iter here too
+        final_model = ElasticNet(**best_params, max_iter=5000)  # Increase to fix convergence
     elif model_name == "cat":
         final_model = CatBoostRegressor(**best_params, loss_function="RMSE",
                                         random_seed=config.RANDOM_STATE, verbose=0)
@@ -172,7 +172,7 @@ def objective_enet(trial: optuna.Trial, X: pd.DataFrame, y: pd.Series,
     params = {
         "alpha": trial.suggest_float("alpha", 0.001, 1.0, log=True),
         "l1_ratio": trial.suggest_float("l1_ratio", 0.0, 1.0),
-        "max_iter": 2000,  # Increase from default 1000 to prevent convergence warnings
+        "max_iter": 5000,  # Increase from 2000 to fix convergence issues with large duality gaps
         "random_state": config.RANDOM_STATE,
     }
     model = ElasticNet(**params)
